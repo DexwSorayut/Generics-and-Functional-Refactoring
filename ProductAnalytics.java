@@ -1,5 +1,5 @@
 import java.util.List;
-import java.util.stream.*;
+import java.util.stream.Collectors;
 
 public class ProductAnalytics {
     private List<Product> productCatalog;
@@ -15,8 +15,10 @@ public class ProductAnalytics {
      */
     public List <Product> findProductsByCategory(String category) {
         return productCatalog.stream()
-            .filter(p -> p.category().equals(category))
-            .collect(Collectors.toList());
+            .filter(p -> p.category().equals(category)) 
+                //กรอง category ว่าเหมือนกับ category ที่รับมาหรือไม่
+            .collect(Collectors.toList()); 
+                //collect มีหน้าที่รวม category ลงใน List
     }
 
     /**
@@ -25,8 +27,11 @@ public class ProductAnalytics {
     public List<String> getProductNamesWithPriceLessThan(double maxPrice) {
         return productCatalog.stream()
             .filter(p -> p.price() < maxPrice)
+                //กรองสินค้าราคาต่ำกว่าที่กำหนด 
             .map(p -> p.name())
+                //ทำให้สินค้าเหลือแค่ชื่อ
             .collect(Collectors.toList());
+                //รวบลงใน List
     }
 
     /**
@@ -35,8 +40,11 @@ public class ProductAnalytics {
     public double calculateTotalStockValueForCategory(String category) {
         return productCatalog.stream()
             .filter(p -> p.category().equals(category))
+                //กรอง category ว่าเหมือนกับ category ที่รับมาหรือไม่
             .mapToDouble(p -> p.price() * p.stock())
+                //เอาราคา * จำนวนสินค้าที่เหลืออยู่
             .sum();
+                //คืนค่าเป็น double
     }
 
     /**
@@ -44,6 +52,9 @@ public class ProductAnalytics {
      */
     public boolean hasProductOutOfStock() {
         return productCatalog.stream()
-            .anyMatch(p -> p.stock() == 0) ;
+            .filter(p -> p.stock() == 0)
+                //กรองว่า stock = 0 หรือไม่
+            .count() > 0;
+                //ถ้ามี stock = 0 ให้นับ 1 ครั้ง ถ้านับแล้วมากกว่า 0 ให้ return true
     }
 }
